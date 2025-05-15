@@ -2,9 +2,11 @@ package com.example.trabalho.model;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 
 @Entity(name = "pessoa")
@@ -15,7 +17,7 @@ public class Pessoa implements UserDetails {
     private Long id;
     private String password;
     private String login;
-    private String Role;
+    private EnumRole role;
 
     public Pessoa() {
     }
@@ -30,7 +32,9 @@ public class Pessoa implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if(this.role == EnumRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority("ROLE_USER"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     public String getPassword() {
@@ -39,7 +43,7 @@ public class Pessoa implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return login;
     }
 
     @Override
@@ -75,10 +79,10 @@ public class Pessoa implements UserDetails {
     }
 
     public String getRole() {
-        return Role;
+        return role;
     }
 
     public void setRole(String role) {
-        Role = role;
+        this.role = role;
     }
 }
