@@ -32,9 +32,9 @@ public class Pessoa implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == EnumRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
-                new SimpleGrantedAuthority("ROLE_USER"));
-        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        if(this.role == EnumRole.ADMIN) return List.of(new SimpleGrantedAuthority("ADMIN"),
+                new SimpleGrantedAuthority("USER"));
+        else return List.of(new SimpleGrantedAuthority("USER"));
     }
 
     public String getPassword() {
@@ -78,11 +78,11 @@ public class Pessoa implements UserDetails {
         this.login = login;
     }
 
-    public String getRole() {
+    public EnumRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(EnumRole role) {
         this.role = role;
     }
 }
