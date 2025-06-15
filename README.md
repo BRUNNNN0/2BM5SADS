@@ -1,5 +1,7 @@
 # Endpoints e Permissões
 
+Prints com dos Endpoints no POSTMAN: https://github.com/BRUNNNN0/2BM5SADS/tree/main/PRINT%20ROTAS%20NO%20POSTMAN
+
 ## Públicos (acesso sem autenticação)
 
 Estas rotas estão disponíveis para qualquer usuário e **não exigem** um token JWT.
