@@ -14,7 +14,7 @@ import java.util.List;
 public class Pessoa implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private String password;
     private String login;
     private EnumRole role;
@@ -22,11 +22,17 @@ public class Pessoa implements UserDetails {
     public Pessoa() {
     }
 
-    public Long getId() {
+    public Pessoa(String login, String password, EnumRole role) {
+        this.login = login;
+        this.password = password;
+        this.role = role;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
