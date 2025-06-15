@@ -1,17 +1,16 @@
 package com.example.trabalho.model;
 
 public enum EnumRole {
-        ADMIN("admin"),
-        USER("user");
+    ADMIN("admin"),
+    USER("user");
 
-        public String role;
-    EnumRole(String role){
+    private String role;
+
+    EnumRole(String role) {
         this.role = role;
     }
 
-    public String getRole(){
+    public String getRole() {
         return role;
     }
-
-
 }

@@ -1,8 +1,9 @@
 package com.example.trabalho.controller;
 
+
 import com.example.trabalho.infra.security.TokenService;
-import com.example.trabalho.model.Pessoa;
-import com.example.trabalho.repository.PessoaRepository;
+import com.example.trabalho.model.Users;
+import com.example.trabalho.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,35 +15,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("auth")
-public class AuthController {
+@RequestMapping("/auth")
+public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
-    private PessoaRepository pessoaRepository;
-
+    private UserRepository userRepository;
     @Autowired
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody Pessoa user) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
+    public ResponseEntity login(@RequestBody Users user ){
+        var usernamePassword=new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
         var auth = this.authenticationManager.authenticate(usernamePassword);
-        var token = tokenService.generateToken((Pessoa) auth.getPrincipal());
+        var token=tokenService.generateToken((Users)auth.getPrincipal());
         return ResponseEntity.ok(token);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Pessoa user) {
-        if (this.pessoaRepository.findByLogin(user.getLogin()) != null) {
-            return ResponseEntity.badRequest().body("Usuário já existe !");
+    public ResponseEntity register(@RequestBody Users user){
+        if(this.userRepository.findByLogin(user.getUsername())!=null){
+            return ResponseEntity.badRequest().build();
         }
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
-        Pessoa newUser = new Pessoa(user.getLogin(), encryptedPassword, user.getRole());
-        this.pessoaRepository.save(newUser);
-
-        return ResponseEntity.ok().body("Usuário registrado !");
+        String encryptedPassword=new BCryptPasswordEncoder().encode(user.getPassword());
+        Users newUser=new Users(user.getUsername(),encryptedPassword,user.getRole());
+        this.userRepository.save(newUser);
+        return ResponseEntity.ok().build();
     }
 }

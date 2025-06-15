@@ -16,36 +16,38 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfigurations {
+public class SecurityConfig {
 
     @Autowired
     private SecurityFilter securityFilter;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .csrf(csrf -> csrf.disable())
+    public SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
-                        //ADMIN
-                        .requestMatchers(HttpMethod.GET, "/pessoas").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/pessoas/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/pessoas/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/pessoas/{id}").hasRole("ADMIN")
+                        //APENAS ADMIN
+                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/users/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/users/{id}").hasRole("ADMIN")
 
-                        //ABERTO
+                        //LIBERADO
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
 
                         //AUTENTICADO
-                        .requestMatchers("/pessoas/getCurrent").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/pessoas/edit").authenticated()
+                        .requestMatchers("/users/getCurrent").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/users/edit").authenticated()
+
+                        // All other requests require authentication
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
